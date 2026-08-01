@@ -8,7 +8,7 @@
     "build": "tsc && vite build",
     "lint": "tsc",
     "preview": "vite preview",
-    "deploy": "npm run build && cd dist && git init && git add -A && git commit -m 'Deploy build' && git push -f git@github.com:del4gent/happy-ei.git HEAD:gh-pages"
+    "deploy": "npm run build && cd docs && git init && git add -A && git commit -m 'Deploy build' && git push -f git@github.com:del4gent/happy-ei.git HEAD:gh-pages"
   },
   "dependencies": {
     "canvas-confetti": "^1.9.4",
