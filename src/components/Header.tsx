@@ -1,5 +1,5 @@
 import React from 'react';
-import { Egg, ShoppingBag, MapPin } from 'lucide-react';
+import { ShoppingBag, MapPin, Sparkles } from 'lucide-react';
 import { TITLE_IMAGE } from '../data/chickens';
 
 interface HeaderProps {
@@ -10,51 +10,57 @@ interface HeaderProps {
 
 export const Header: React.FC<HeaderProps> = ({ cartCount, cartonCapacity, onOpenCart }) => {
   return (
-    <header className="relative w-full bg-slate-900 text-white overflow-hidden shadow-md">
-      {/* Background Cover Image with Soft Gradient */}
-      <div className="absolute inset-0 z-0 opacity-25">
+    <header className="relative w-full bg-slate-950 text-white overflow-hidden">
+      {/* Background Cover Image with Soft Gradient Overlay */}
+      <div className="absolute inset-0 z-0 opacity-20">
         <img
           src={TITLE_IMAGE}
           alt="La Maison Bleue"
-          className="w-full h-full object-cover object-center filter brightness-90 contrast-105"
+          className="w-full h-full object-cover object-center filter brightness-110"
         />
-        <div className="absolute inset-0 bg-gradient-to-b from-slate-950/80 via-slate-900/60 to-slate-900" />
+        <div className="absolute inset-0 bg-gradient-to-b from-slate-950/70 via-slate-950/90 to-slate-950" />
       </div>
 
-      <div className="relative z-10 max-w-6xl mx-auto px-4 sm:px-6 py-6">
+      <div className="relative z-10 max-w-6xl mx-auto px-4 sm:px-6 py-6 sm:py-8">
+        {/* Navigation Bar */}
         <div className="flex items-center justify-between">
-          {/* Logo & Brand */}
           <div className="flex items-center space-x-3">
-            <div className="w-10 h-10 rounded-2xl bg-amber-400 text-slate-950 font-black text-xl flex items-center justify-center shadow-lg">
+            <div className="w-9 h-9 rounded-xl bg-amber-400 text-slate-950 font-black text-lg flex items-center justify-center shadow-md">
               🏠
             </div>
             <div>
-              <h1 className="text-xl sm:text-2xl font-black font-serif text-white tracking-tight">
+              <span className="text-lg sm:text-xl font-bold font-serif tracking-tight text-white">
                 La Maison Bleue
-              </h1>
-              <p className="text-xs text-amber-200/80 font-medium flex items-center gap-1">
-                <MapPin className="w-3 h-3 text-amber-400 shrink-0" /> Hof-Direktverkauf • Bio-Freilandeier
-              </p>
+              </span>
+              <div className="flex items-center text-[11px] text-slate-400 font-medium">
+                <MapPin className="w-3 h-3 text-amber-400 mr-1 shrink-0" /> Bio-Freilandhof
+              </div>
             </div>
           </div>
 
-          {/* Quick Cart Pill */}
           <button
             onClick={onOpenCart}
-            className="flex items-center space-x-2 bg-amber-400 hover:bg-amber-300 text-slate-950 font-extrabold px-4 py-2 rounded-full shadow-lg transition-all active:scale-95 text-xs sm:text-sm"
+            className="flex items-center space-x-2 bg-amber-400 hover:bg-amber-300 active:scale-95 text-slate-950 font-bold px-4 py-2 rounded-full text-xs sm:text-sm shadow-md transition-all"
           >
-            <Egg className="w-4 h-4 fill-slate-950" />
+            <ShoppingBag className="w-4 h-4" />
             <span>Karton ({cartCount}/{cartonCapacity})</span>
           </button>
         </div>
 
-        {/* Minimalist Subtitle */}
-        <div className="mt-6 pt-4 border-t border-white/10 text-center sm:text-left">
-          <h2 className="text-2xl sm:text-3xl font-extrabold font-serif text-white">
-            Frische Eier direkt vom Huhn bestellen.
-          </h2>
-          <p className="text-xs sm:text-sm text-slate-300 font-light mt-1">
-            Wähle deine Lieblingshühner und stelle deinen individuellen Eierkarton zusammen.
+        {/* Hero Title */}
+        <div className="mt-8 max-w-2xl space-y-2">
+          <div className="inline-flex items-center space-x-1.5 bg-white/10 text-amber-300 text-xs font-semibold px-3 py-1 rounded-full backdrop-blur-md">
+            <Sparkles className="w-3.5 h-3.5" />
+            <span>Frische Bio-Eier direkt vom Huhn</span>
+          </div>
+
+          <h1 className="text-3xl sm:text-4xl md:text-5xl font-black font-serif text-white tracking-tight leading-tight">
+            Wähle dein Huhn. <br />
+            <span className="text-amber-300">Stelle deinen Karton zusammen.</span>
+          </h1>
+
+          <p className="text-xs sm:text-sm text-slate-300 font-light leading-relaxed pt-1">
+            Jedes Ei auf La Maison Bleue stammt von einem glücklichen Huhn mit eigenem Charakter. Suche dir aus, von welchem Huhn du dein Ei haben möchtest!
           </p>
         </div>
       </div>

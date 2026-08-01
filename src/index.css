@@ -5,60 +5,46 @@
 @layer base {
   html {
     scroll-behavior: smooth;
+    font-feature-settings: "cv02", "cv03", "cv04", "cv11";
+  }
+
+  body {
+    background-color: #fbfbfd;
+    color: #0f172a;
   }
 }
 
-.glass-card {
-  background: rgba(255, 255, 255, 0.85);
-  backdrop-filter: blur(12px);
-  -webkit-backdrop-filter: blur(12px);
-  border: 1px solid rgba(255, 255, 255, 0.4);
+.modern-card {
+  background: #ffffff;
+  border: 1px solid rgba(226, 232, 240, 0.8);
+  box-shadow: 0 4px 20px -2px rgba(15, 23, 42, 0.03);
 }
 
-.glass-dark {
-  background: rgba(15, 23, 42, 0.82);
+.modern-card-hover {
+  transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.modern-card-hover:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 12px 32px -4px rgba(15, 23, 42, 0.08);
+  border-color: rgba(203, 213, 225, 0.9);
+}
+
+.glass-header {
+  background: rgba(15, 23, 42, 0.88);
   backdrop-filter: blur(16px);
   -webkit-backdrop-filter: blur(16px);
-  border: 1px solid rgba(255, 255, 255, 0.1);
-}
-
-/* Egg Shell Colors */
-.egg-color-braun {
-  background: linear-gradient(135deg, #d9915b 0%, #a65c2e 100%);
-  border-color: #8c471c;
-}
-
-.egg-color-weiss {
-  background: linear-gradient(135deg, #ffffff 0%, #f1f5f9 100%);
-  border-color: #cbd5e1;
-}
-
-.egg-color-dunkelbraun {
-  background: linear-gradient(135deg, #78350f 0%, #451a03 100%);
-  border-color: #290e02;
-}
-
-.egg-color-gruen {
-  background: linear-gradient(135deg, #a7f3d0 0%, #34d399 100%);
-  border-color: #059669;
-}
-
-.egg-color-creme {
-  background: linear-gradient(135deg, #fef3c7 0%, #fde68a 100%);
-  border-color: #f59e0b;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.08);
 }
 
 /* Custom Scrollbar */
 ::-webkit-scrollbar {
-  width: 8px;
+  width: 6px;
 }
 ::-webkit-scrollbar-track {
   background: #f1f5f9;
 }
 ::-webkit-scrollbar-thumb {
   background: #cbd5e1;
-  border-radius: 4px;
-}
-::-webkit-scrollbar-thumb:hover {
-  background: #94a3b8;
+  border-radius: 9999px;
 }
