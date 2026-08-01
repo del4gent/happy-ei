@@ -3,7 +3,10 @@ import react from '@vitejs/plugin-react';
 
 export default defineConfig({
   plugins: [react()],
-  base: '/happy-ei/',
+  base: '',
+  build: {
+    assetsDir: 'assets',
+  },
   server: {
     port: 3000,
     host: true
