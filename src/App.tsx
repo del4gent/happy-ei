@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { CHICKENS } from './data/chickens';
-import { Hen, SelectedEgg, CartonCapacity, CustomerDetails, CompletedOrder } from './types';
+import { Hen, SelectedEgg, CartonCapacity, CustomerDetails, CompletedOrder, EggStamp } from './types';
 import { Header } from './components/Header';
 import { ChickenCard } from './components/ChickenCard';
 import { EggCarton } from './components/EggCarton';
@@ -8,14 +8,36 @@ import { OrderSummary } from './components/OrderSummary';
 import { ChickenDetailModal } from './components/ChickenDetailModal';
 import { CheckoutModal } from './components/CheckoutModal';
 import { OrderConfirmation } from './components/OrderConfirmation';
-import { Sparkles, Heart, Egg, ShieldCheck, HelpCircle } from 'lucide-react';
+import { QuizModal } from './components/QuizModal';
+import { EggStampModal } from './components/EggStampModal';
+import { Sparkles, Heart, Egg, Volume2 } from 'lucide-react';
 
 export const App: React.FC = () => {
   const [selectedEggs, setSelectedEggs] = useState<SelectedEgg[]>([]);
   const [cartonCapacity, setCartonCapacity] = useState<CartonCapacity>(6);
   const [activeHenModal, setActiveHenModal] = useState<Hen | null>(null);
   const [isCheckoutOpen, setIsCheckoutOpen] = useState<boolean>(false);
+  const [isQuizOpen, setIsQuizOpen] = useState<boolean>(false);
+  const [stampEggTarget, setStampEggTarget] = useState<SelectedEgg | null>(null);
   const [completedOrder, setCompletedOrder] = useState<CompletedOrder | null>(null);
+
+  // Audio effect helper
+  const playPopSound = () => {
+    try {
+      const audioCtx = new (window.AudioContext || (window as any).webkitAudioContext)();
+      const osc = audioCtx.createOscillator();
+      const gain = audioCtx.createGain();
+      osc.type = 'sine';
+      osc.frequency.setValueAtTime(400, audioCtx.currentTime);
+      osc.frequency.exponentialRampToValueAtTime(800, audioCtx.currentTime + 0.12);
+      gain.gain.setValueAtTime(0.3, audioCtx.currentTime);
+      gain.gain.exponentialRampToValueAtTime(0.01, audioCtx.currentTime + 0.12);
+      osc.connect(gain);
+      gain.connect(audioCtx.destination);
+      osc.start();
+      osc.stop(audioCtx.currentTime + 0.12);
+    } catch (e) {}
+  };
 
   // Add egg from a specific hen to carton
   const handleAddEgg = (hen: Hen) => {
@@ -23,6 +45,8 @@ export const App: React.FC = () => {
       alert(`Dein ${cartonCapacity}er Karton ist bereits voll! Du kannst die Kartongröße (6er, 10er, 12er) anpassen oder Eier entfernen.`);
       return;
     }
+
+    playPopSound();
 
     // Find first empty slot
     const occupiedSlots = new Set(selectedEggs.map((e) => e.slotIndex));
@@ -47,6 +71,13 @@ export const App: React.FC = () => {
   // Remove egg at specific slot in carton
   const handleRemoveEggAtSlot = (slotIndex: number) => {
     setSelectedEggs((prev) => prev.filter((e) => e.slotIndex !== slotIndex));
+  };
+
+  // Apply stamp to an egg slot
+  const handleApplyStamp = (slotIndex: number, stamp?: EggStamp) => {
+    setSelectedEggs((prev) =>
+      prev.map((item) => (item.slotIndex === slotIndex ? { ...item, stamp } : item))
+    );
   };
 
   // Clear carton
@@ -120,6 +151,7 @@ export const App: React.FC = () => {
         cartCount={selectedEggs.length}
         cartonCapacity={cartonCapacity}
         onOpenCart={scrollToCarton}
+        onOpenQuiz={() => setIsQuizOpen(true)}
       />
 
       {/* Main Content Area */}
@@ -141,9 +173,18 @@ export const App: React.FC = () => {
               </p>
             </div>
 
-            <div className="text-xs text-slate-500 bg-white px-4 py-2 rounded-2xl border border-slate-200 shadow-sm flex items-center gap-2 self-start md:self-auto">
-              <Egg className="w-4 h-4 text-amber-500" />
-              <span>5 Hühner auf La Maison Bleue</span>
+            <div className="flex items-center gap-3">
+              <button
+                onClick={() => setIsQuizOpen(true)}
+                className="text-xs font-bold text-slate-900 bg-amber-200 hover:bg-amber-300 px-4 py-2 rounded-2xl shadow-sm transition-all flex items-center gap-1.5 active:scale-95"
+              >
+                <span>🧩 Hühner-Match Quiz</span>
+              </button>
+
+              <div className="text-xs text-slate-500 bg-white px-4 py-2 rounded-2xl border border-slate-200 shadow-sm flex items-center gap-2">
+                <Egg className="w-4 h-4 text-amber-500" />
+                <span>5 Hühner auf La Maison Bleue</span>
+              </div>
             </div>
           </div>
 
@@ -173,8 +214,10 @@ export const App: React.FC = () => {
             cartonCapacity={cartonCapacity}
             onCapacityChange={handleCapacityChange}
             onRemoveEggAtSlot={handleRemoveEggAtSlot}
+            onSelectEggSlot={(egg) => setStampEggTarget(egg)}
             onClearCarton={handleClearCarton}
             onOpenCheckout={() => setIsCheckoutOpen(true)}
+            onOpenQuiz={() => setIsQuizOpen(true)}
             totalPrice={totalPrice}
             priceDerivation={priceDerivation}
           />
@@ -232,6 +275,22 @@ export const App: React.FC = () => {
         onClose={() => setActiveHenModal(null)}
         onAddEgg={handleAddEgg}
         henEggCount={selectedEggs.filter((e) => activeHenModal && e.hen.id === activeHenModal.id).length}
+      />
+
+      {/* Quiz Modal */}
+      <QuizModal
+        isOpen={isQuizOpen}
+        onClose={() => setIsQuizOpen(false)}
+        onSelectHen={(hen) => handleAddEgg(hen)}
+      />
+
+      {/* Egg Stamp Studio Modal */}
+      <EggStampModal
+        egg={stampEggTarget}
+        currentStamp={stampEggTarget?.stamp}
+        onClose={() => setStampEggTarget(null)}
+        onApplyStamp={handleApplyStamp}
+        onRemoveEgg={handleRemoveEggAtSlot}
       />
 
       {/* Checkout Modal */}

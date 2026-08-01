@@ -20,9 +20,16 @@ export interface Hen {
 
 export type CartonCapacity = 6 | 10 | 12;
 
+export interface EggStamp {
+  id: string;
+  emoji: string;
+  text: string;
+}
+
 export interface SelectedEgg {
   slotIndex: number;
   hen: Hen;
+  stamp?: EggStamp;
 }
 
 export interface CustomerDetails {
