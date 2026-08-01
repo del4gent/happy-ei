@@ -1,16 +1,14 @@
 import React from 'react';
-import { SelectedEgg, CartonCapacity, Hen, EggStamp } from '../types';
-import { Egg, Trash2, Sparkles, RefreshCw, CheckCircle2, Award, Stamp } from 'lucide-react';
+import { SelectedEgg, CartonCapacity } from '../types';
+import { Egg, RefreshCw, CheckCircle2 } from 'lucide-react';
 
 interface EggCartonProps {
   selectedEggs: SelectedEgg[];
   cartonCapacity: CartonCapacity;
   onCapacityChange: (capacity: CartonCapacity) => void;
   onRemoveEggAtSlot: (slotIndex: number) => void;
-  onSelectEggSlot: (egg: SelectedEgg) => void;
   onClearCarton: () => void;
   onOpenCheckout: () => void;
-  onOpenQuiz: () => void;
   totalPrice: number;
   priceDerivation: string;
 }
@@ -20,62 +18,38 @@ export const EggCarton: React.FC<EggCartonProps> = ({
   cartonCapacity,
   onCapacityChange,
   onRemoveEggAtSlot,
-  onSelectEggSlot,
   onClearCarton,
   onOpenCheckout,
-  onOpenQuiz,
   totalPrice,
   priceDerivation,
 }) => {
   const slots = Array.from({ length: cartonCapacity }, (_, i) => i);
   const filledCount = selectedEggs.length;
-  const isFull = filledCount === cartonCapacity;
-
-  // Compute Achievements / Badges
-  const uniqueHensCount = new Set(selectedEggs.map((e) => e.hen.id)).size;
-  const hasRainbowMix = uniqueHensCount >= 3;
-  const hasBlanche = selectedEggs.some((e) => e.hen.id === 'blanche');
-  const hasPippa = selectedEggs.some((e) => e.hen.id === 'pippa');
 
   return (
-    <div className="bg-gradient-to-b from-amber-100/70 via-amber-50 to-farm-wood-200/50 rounded-3xl p-6 sm:p-8 shadow-xl border border-amber-200/80 relative overflow-hidden">
-      {/* Decorative Carton Texture / Header */}
-      <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 pb-6 border-b border-amber-300/60">
+    <div className="bg-gradient-to-b from-amber-100/60 to-amber-50 rounded-3xl p-6 sm:p-8 shadow-md border border-amber-200/80 space-y-6">
+      {/* Header */}
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-4 border-b border-amber-200">
         <div>
-          <div className="flex items-center space-x-2">
-            <div className="inline-flex items-center space-x-1.5 text-xs font-bold text-amber-800 uppercase tracking-widest bg-amber-200/60 px-3 py-1 rounded-full">
-              <Sparkles className="w-3.5 h-3.5 text-amber-600" />
-              <span>Dein individueller Karton</span>
-            </div>
-
-            {/* Quiz launcher button */}
-            <button
-              onClick={onOpenQuiz}
-              className="inline-flex items-center space-x-1 text-xs font-bold text-farm-blue-900 bg-blue-100 hover:bg-blue-200 px-3 py-1 rounded-full transition-colors animate-pulse"
-            >
-              <span>🧩 Welches Huhn passt zu dir?</span>
-            </button>
-          </div>
-
-          <h2 className="text-2xl sm:text-3xl font-black font-serif text-farm-wood-900 mt-1">
-            Eierkarton-Mix ({filledCount}/{cartonCapacity} Eier)
+          <h2 className="text-2xl font-black font-serif text-slate-900">
+            Dein Eierkarton ({filledCount}/{cartonCapacity} Eier)
           </h2>
-          <p className="text-xs text-amber-900/80 mt-1">
-            Klicke auf ein Ei, um einen Wunschstempel aufzudrucken oder es herauszunehmen!
+          <p className="text-xs text-slate-600 mt-0.5">
+            Klicke auf ein Ei im Karton, um es wieder zu entfernen.
           </p>
         </div>
 
-        {/* Carton Size Selector */}
-        <div className="flex items-center space-x-2 bg-white/90 backdrop-blur p-1.5 rounded-2xl border border-amber-200 shadow-sm self-start md:self-auto">
-          <span className="text-xs font-bold text-slate-600 px-2">Größe:</span>
+        {/* Box Size Selector */}
+        <div className="flex items-center space-x-1.5 bg-white p-1 rounded-xl border border-amber-200 shadow-sm self-start sm:self-auto">
+          <span className="text-xs font-bold text-slate-500 px-2">Größe:</span>
           {([6, 10, 12] as CartonCapacity[]).map((cap) => (
             <button
               key={cap}
               onClick={() => onCapacityChange(cap)}
-              className={`px-3 py-1.5 rounded-xl text-xs font-bold transition-all ${
+              className={`px-3 py-1 rounded-lg text-xs font-bold transition-all ${
                 cartonCapacity === cap
-                  ? 'bg-farm-blue-900 text-white shadow-md scale-105'
-                  : 'bg-transparent text-slate-700 hover:bg-amber-100/80'
+                  ? 'bg-slate-900 text-white shadow'
+                  : 'bg-transparent text-slate-600 hover:bg-slate-100'
               }`}
             >
               {cap}er Box
@@ -84,127 +58,69 @@ export const EggCarton: React.FC<EggCartonProps> = ({
         </div>
       </div>
 
-      {/* Gamified Achievements Banner */}
-      <div className="pt-4 flex flex-wrap gap-2 text-xs">
-        {hasRainbowMix && (
-          <div className="bg-gradient-to-r from-pink-500 via-purple-500 to-indigo-500 text-white px-3 py-1 rounded-full font-bold shadow-md flex items-center gap-1.5 animate-popIn">
-            <Award className="w-3.5 h-3.5" />
-            <span>🌈 Bunter Regenbogen-Karton!</span>
-          </div>
-        )}
-        {hasBlanche && (
-          <div className="bg-slate-900 text-amber-300 px-3 py-1 rounded-full font-bold shadow-md flex items-center gap-1.5 animate-popIn">
-            <Award className="w-3.5 h-3.5 text-amber-400" />
-            <span>👑 Königs-Mix mit Blanche (XXL)</span>
-          </div>
-        )}
-        {hasPippa && (
-          <div className="bg-emerald-700 text-emerald-100 px-3 py-1 rounded-full font-bold shadow-md flex items-center gap-1.5 animate-popIn">
-            <Award className="w-3.5 h-3.5 text-emerald-300" />
-            <span>💚 Pastell-Magie von Pippa</span>
-          </div>
-        )}
-        {isFull && (
-          <div className="bg-amber-500 text-slate-950 px-3 py-1 rounded-full font-black shadow-md flex items-center gap-1.5 animate-bounce">
-            <Sparkles className="w-3.5 h-3.5" />
-            <span>📦 Karton ist komplett voll!</span>
-          </div>
-        )}
-      </div>
+      {/* Visual Carton Grid */}
+      <div className={`grid gap-3 sm:gap-4 ${
+        cartonCapacity === 6 
+          ? 'grid-cols-3 sm:grid-cols-6' 
+          : cartonCapacity === 10 
+          ? 'grid-cols-5 sm:grid-cols-5' 
+          : 'grid-cols-4 sm:grid-cols-6'
+      }`}>
+        {slots.map((slotIdx) => {
+          const eggInSlot = selectedEggs.find((e) => e.slotIndex === slotIdx);
 
-      {/* Visual Egg Carton Grid */}
-      <div className="my-8">
-        <div className={`grid gap-4 sm:gap-6 ${
-          cartonCapacity === 6 
-            ? 'grid-cols-3 sm:grid-cols-6' 
-            : cartonCapacity === 10 
-            ? 'grid-cols-5 sm:grid-cols-5' 
-            : 'grid-cols-4 sm:grid-cols-6'
-        }`}>
-          {slots.map((slotIdx) => {
-            const eggInSlot = selectedEggs.find((e) => e.slotIndex === slotIdx);
-
-            return (
-              <div
-                key={slotIdx}
-                className="relative aspect-square flex flex-col items-center justify-center"
-              >
-                {/* Empty Slot Holder */}
-                <div className={`w-full h-full rounded-2xl border-2 border-dashed flex flex-col items-center justify-center transition-all duration-300 ${
-                  eggInSlot 
-                    ? 'border-transparent bg-white/50 shadow-inner' 
-                    : 'border-amber-400/50 bg-white/20 hover:bg-white/40'
-                }`}>
-                  {eggInSlot ? (
-                    /* Placed Egg */
-                    <button
-                      onClick={() => onSelectEggSlot(eggInSlot)}
-                      className="group/egg relative w-full h-full p-2 flex flex-col items-center justify-center cursor-pointer transition-transform duration-300 hover:scale-110 active:scale-95"
-                      title={`${eggInSlot.hen.name}s Ei anpassen`}
-                    >
-                      {/* Realistic 3D Egg Shape */}
-                      <div className={`relative w-12 h-16 sm:w-14 sm:h-18 rounded-[50%_50%_50%_50%_/_60%_60%_40%_40%] shadow-lg border-2 flex flex-col items-center justify-center transition-all duration-300 egg-color-${eggInSlot.hen.eggColor}`}>
-                        {/* Miniature Hen Avatar */}
-                        <div className="w-7 h-7 sm:w-8 sm:h-8 rounded-full overflow-hidden border-2 border-white shadow-md transform -translate-y-0.5">
-                          <img
-                            src={eggInSlot.hen.image}
-                            alt={eggInSlot.hen.name}
-                            className="w-full h-full object-cover"
-                          />
-                        </div>
-
-                        {/* Stamp Badge if present */}
-                        {eggInSlot.stamp ? (
-                          <span className="bg-white/95 text-[9px] font-black px-1.5 py-0.2 rounded-full shadow border border-amber-400 text-slate-900 truncate max-w-[48px] -mt-1">
-                            {eggInSlot.stamp.emoji}
-                          </span>
-                        ) : (
-                          <span className="text-[9px] font-bold text-slate-700/60 opacity-0 group-hover/egg:opacity-100 transition-opacity">
-                            Stempeln
-                          </span>
-                        )}
+          return (
+            <div key={slotIdx} className="aspect-square flex items-center justify-center">
+              <div className={`w-full h-full rounded-2xl border-2 border-dashed flex flex-col items-center justify-center transition-all ${
+                eggInSlot ? 'border-transparent bg-white/60 shadow-inner' : 'border-amber-300/60 bg-white/30'
+              }`}>
+                {eggInSlot ? (
+                  <button
+                    onClick={() => onRemoveEggAtSlot(slotIdx)}
+                    className="w-full h-full p-2 flex flex-col items-center justify-center cursor-pointer hover:scale-105 transition-transform"
+                    title={`${eggInSlot.hen.name}s Ei entfernen`}
+                  >
+                    <div className={`relative w-12 h-16 rounded-[50%_50%_50%_50%_/_60%_60%_40%_40%] shadow border-2 flex items-center justify-center egg-color-${eggInSlot.hen.eggColor}`}>
+                      <div className="w-7 h-7 rounded-full overflow-hidden border-2 border-white shadow">
+                        <img src={eggInSlot.hen.image} alt={eggInSlot.hen.name} className="w-full h-full object-cover" />
                       </div>
-
-                      {/* Hen Label under Egg */}
-                      <span className="mt-1 text-[11px] font-extrabold text-slate-800 truncate max-w-full px-1">
-                        {eggInSlot.hen.name}
-                      </span>
-                    </button>
-                  ) : (
-                    /* Empty Placeholder Slot */
-                    <div className="text-center text-amber-700/60 p-2">
-                      <Egg className="w-6 h-6 mx-auto opacity-30 stroke-1" />
-                      <span className="text-[10px] font-bold block mt-1">Platz {slotIdx + 1}</span>
                     </div>
-                  )}
-                </div>
+                    <span className="mt-1 text-[11px] font-extrabold text-slate-800 truncate max-w-full">
+                      {eggInSlot.hen.name}
+                    </span>
+                  </button>
+                ) : (
+                  <div className="text-center text-amber-700/50">
+                    <Egg className="w-5 h-5 mx-auto opacity-30" />
+                    <span className="text-[10px] font-bold block mt-0.5">Frei</span>
+                  </div>
+                )}
               </div>
-            );
-          })}
-        </div>
+            </div>
+          );
+        })}
       </div>
 
-      {/* Carton Footer & Price Derivation */}
-      <div className="bg-white/90 backdrop-blur rounded-2xl p-5 border border-amber-200 shadow-md flex flex-col md:flex-row items-center justify-between gap-4">
+      {/* Carton Summary Footer with Formula */}
+      <div className="bg-white rounded-2xl p-4 sm:p-5 border border-amber-200 shadow flex flex-col sm:flex-row items-center justify-between gap-4">
         <div>
-          <div className="text-xs text-amber-900 font-medium flex items-center gap-1.5">
-            <CheckCircle2 className="w-4 h-4 text-emerald-600 inline" />
-            <span>Preisberechnung &amp; Herleitung:</span>
+          <div className="text-xs text-slate-500 font-medium flex items-center gap-1">
+            <CheckCircle2 className="w-3.5 h-3.5 text-emerald-600 inline" />
+            <span>Berechneter Gesamtpreis:</span>
           </div>
-          <div className="text-2xl font-black text-slate-900 font-serif mt-0.5">
+          <div className="text-2xl font-black text-slate-900 font-serif">
             {totalPrice.toLocaleString('de-DE', { style: 'currency', currency: 'EUR' })}
           </div>
-          <div className="text-xs text-slate-600 font-mono mt-0.5">
+          <div className="text-xs text-slate-500 font-mono mt-0.5">
             {priceDerivation}
           </div>
         </div>
 
-        {/* Action buttons */}
-        <div className="flex items-center space-x-3 w-full md:w-auto">
+        <div className="flex items-center space-x-2 w-full sm:w-auto">
           {filledCount > 0 && (
             <button
               onClick={onClearCarton}
-              className="px-3.5 py-2.5 rounded-xl border border-slate-300 text-slate-600 hover:text-red-600 hover:border-red-300 text-xs font-bold transition-colors flex items-center gap-1"
+              className="px-3 py-2.5 rounded-xl border border-slate-300 text-slate-600 hover:text-red-600 text-xs font-bold transition-colors flex items-center gap-1"
             >
               <RefreshCw className="w-3.5 h-3.5" /> Leeren
             </button>
@@ -213,7 +129,7 @@ export const EggCarton: React.FC<EggCartonProps> = ({
           <button
             onClick={onOpenCheckout}
             disabled={filledCount === 0}
-            className="flex-1 md:flex-none px-6 py-3 rounded-xl bg-gradient-to-r from-amber-500 to-amber-600 hover:from-amber-400 hover:to-amber-500 disabled:opacity-40 text-slate-950 font-black text-sm shadow-lg shadow-amber-500/20 transition-all duration-300 active:scale-95 flex items-center justify-center gap-2"
+            className="flex-1 sm:flex-none px-6 py-3 rounded-xl bg-amber-400 hover:bg-amber-300 disabled:opacity-40 text-slate-950 font-black text-sm shadow transition-all active:scale-95 flex items-center justify-center gap-2"
           >
             <Egg className="w-4 h-4 fill-slate-950" />
             <span>Jetzt bestellen ({filledCount} Eier)</span>

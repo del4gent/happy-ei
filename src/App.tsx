@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { CHICKENS } from './data/chickens';
-import { Hen, SelectedEgg, CartonCapacity, CustomerDetails, CompletedOrder, EggStamp } from './types';
+import { Hen, SelectedEgg, CartonCapacity, CustomerDetails, CompletedOrder } from './types';
 import { Header } from './components/Header';
 import { ChickenCard } from './components/ChickenCard';
 import { EggCarton } from './components/EggCarton';
@@ -8,45 +8,21 @@ import { OrderSummary } from './components/OrderSummary';
 import { ChickenDetailModal } from './components/ChickenDetailModal';
 import { CheckoutModal } from './components/CheckoutModal';
 import { OrderConfirmation } from './components/OrderConfirmation';
-import { QuizModal } from './components/QuizModal';
-import { EggStampModal } from './components/EggStampModal';
-import { Sparkles, Heart, Egg, ArrowRight, CheckCircle2 } from 'lucide-react';
+import { Egg, ArrowRight } from 'lucide-react';
 
 export const App: React.FC = () => {
   const [selectedEggs, setSelectedEggs] = useState<SelectedEgg[]>([]);
   const [cartonCapacity, setCartonCapacity] = useState<CartonCapacity>(6);
   const [activeHenModal, setActiveHenModal] = useState<Hen | null>(null);
   const [isCheckoutOpen, setIsCheckoutOpen] = useState<boolean>(false);
-  const [isQuizOpen, setIsQuizOpen] = useState<boolean>(false);
-  const [stampEggTarget, setStampEggTarget] = useState<SelectedEgg | null>(null);
   const [completedOrder, setCompletedOrder] = useState<CompletedOrder | null>(null);
-
-  // Audio effect helper
-  const playPopSound = () => {
-    try {
-      const audioCtx = new (window.AudioContext || (window as any).webkitAudioContext)();
-      const osc = audioCtx.createOscillator();
-      const gain = audioCtx.createGain();
-      osc.type = 'sine';
-      osc.frequency.setValueAtTime(400, audioCtx.currentTime);
-      osc.frequency.exponentialRampToValueAtTime(800, audioCtx.currentTime + 0.12);
-      gain.gain.setValueAtTime(0.3, audioCtx.currentTime);
-      gain.gain.exponentialRampToValueAtTime(0.01, audioCtx.currentTime + 0.12);
-      osc.connect(gain);
-      gain.connect(audioCtx.destination);
-      osc.start();
-      osc.stop(audioCtx.currentTime + 0.12);
-    } catch (e) {}
-  };
 
   // Add egg from a specific hen to carton
   const handleAddEgg = (hen: Hen) => {
     if (selectedEggs.length >= cartonCapacity) {
-      alert(`Dein ${cartonCapacity}er Karton ist bereits voll! Du kannst unten die Kartongröße (6er, 10er, 12er) anpassen oder Eier entfernen.`);
+      alert(`Dein ${cartonCapacity}er Karton ist bereits voll! Du kannst unten die Kartongröße anpassen oder Eier entfernen.`);
       return;
     }
-
-    playPopSound();
 
     // Find first empty slot
     const occupiedSlots = new Set(selectedEggs.map((e) => e.slotIndex));
@@ -71,13 +47,6 @@ export const App: React.FC = () => {
   // Remove egg at specific slot in carton
   const handleRemoveEggAtSlot = (slotIndex: number) => {
     setSelectedEggs((prev) => prev.filter((e) => e.slotIndex !== slotIndex));
-  };
-
-  // Apply stamp to an egg slot
-  const handleApplyStamp = (slotIndex: number, stamp?: EggStamp) => {
-    setSelectedEggs((prev) =>
-      prev.map((item) => (item.slotIndex === slotIndex ? { ...item, stamp } : item))
-    );
   };
 
   // Clear carton
@@ -145,42 +114,27 @@ export const App: React.FC = () => {
   }
 
   return (
-    <div className="min-h-screen flex flex-col bg-amber-50/30 text-slate-800 font-sans pb-20 md:pb-0">
-      {/* Compact Header */}
+    <div className="min-h-screen flex flex-col bg-slate-50 text-slate-800 font-sans pb-20 sm:pb-0">
+      {/* Header */}
       <Header
         cartCount={selectedEggs.length}
         cartonCapacity={cartonCapacity}
         onOpenCart={scrollToCarton}
-        onOpenQuiz={() => setIsQuizOpen(true)}
       />
 
-      {/* Main Content Area */}
-      <main className="flex-grow max-w-7xl w-full mx-auto px-4 sm:px-6 lg:px-8 py-6 space-y-12">
+      {/* Main Container */}
+      <main className="flex-grow max-w-6xl w-full mx-auto px-4 sm:px-6 py-8 space-y-12">
         
-        {/* SECTION 1: HÜHNER-AUSWAHL (DIREKT IM VORDERGRUND) */}
-        <section id="huehner-auswahl" className="space-y-4 scroll-mt-4">
-          <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 bg-amber-100/60 p-4 rounded-2xl border border-amber-200">
-            <div>
-              <div className="inline-flex items-center space-x-1.5 text-xs font-extrabold text-farm-blue-900 uppercase tracking-wider">
-                <Sparkles className="w-4 h-4 text-amber-600" />
-                <span>Schritt 1: Hühner auswählen</span>
-              </div>
-              <h2 className="text-xl sm:text-2xl font-black font-serif text-slate-900 mt-0.5">
-                Klicke auf das (+), um ein Ei in deinen Karton zu legen:
-              </h2>
-            </div>
-
-            <div className="flex items-center gap-2">
-              <button
-                onClick={() => setIsQuizOpen(true)}
-                className="text-xs font-bold text-slate-900 bg-amber-300 hover:bg-amber-400 px-3.5 py-2 rounded-xl shadow-sm transition-all flex items-center gap-1.5 shrink-0"
-              >
-                <span>🧩 Hühner-Quiz</span>
-              </button>
-            </div>
+        {/* SECTION 1: HÜHNER-AUSWAHL */}
+        <section id="huehner-auswahl" className="space-y-4">
+          <div className="flex items-center justify-between">
+            <h2 className="text-xl sm:text-2xl font-black font-serif text-slate-900">
+              1. Wähle dein Huhn
+            </h2>
+            <span className="text-xs text-slate-500 font-medium">5 Hühner zur Auswahl</span>
           </div>
 
-          {/* Grid of Chicken Cards (Responsive 1-col mobile, 2-col tablet, 5-col desktop) */}
+          {/* Grid of Chicken Cards */}
           <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-4 sm:gap-6">
             {CHICKENS.map((hen) => {
               const henEggCount = selectedEggs.filter((e) => e.hen.id === hen.id).length;
@@ -191,7 +145,6 @@ export const App: React.FC = () => {
                   selectedCount={henEggCount}
                   onAddEgg={handleAddEgg}
                   onRemoveEgg={handleRemoveEgg}
-                  onOpenDetails={(h) => setActiveHenModal(h)}
                   isCartonFull={selectedEggs.length >= cartonCapacity}
                 />
               );
@@ -199,25 +152,26 @@ export const App: React.FC = () => {
           </div>
         </section>
 
-        {/* SECTION 2: VISUAL EGG CARTON BUILDER */}
-        <section id="eierkarton-section" className="space-y-8 scroll-mt-6">
+        {/* SECTION 2: EIERKARTON */}
+        <section id="eierkarton-section" className="space-y-6 scroll-mt-6">
+          <h2 className="text-xl sm:text-2xl font-black font-serif text-slate-900">
+            2. Dein Eierkarton
+          </h2>
           <EggCarton
             selectedEggs={selectedEggs}
             cartonCapacity={cartonCapacity}
             onCapacityChange={handleCapacityChange}
             onRemoveEggAtSlot={handleRemoveEggAtSlot}
-            onSelectEggSlot={(egg) => setStampEggTarget(egg)}
             onClearCarton={handleClearCarton}
             onOpenCheckout={() => setIsCheckoutOpen(true)}
-            onOpenQuiz={() => setIsQuizOpen(true)}
             totalPrice={totalPrice}
             priceDerivation={priceDerivation}
           />
         </section>
 
-        {/* SECTION 3: SUMMARY & PRICING BREAKDOWN */}
+        {/* SECTION 3: BESTELLÜBERSICHT */}
         {selectedEggs.length > 0 && (
-          <section className="max-w-4xl mx-auto">
+          <section className="max-w-3xl mx-auto">
             <OrderSummary
               selectedEggs={selectedEggs}
               chickens={CHICKENS}
@@ -226,33 +180,17 @@ export const App: React.FC = () => {
             />
           </section>
         )}
-
-        {/* SECTION 4: FARM PHILOSOPHY & TRUST BANNER */}
-        <section className="bg-gradient-to-r from-farm-blue-900 via-farm-blue-800 to-amber-950 text-white rounded-3xl p-6 sm:p-10 shadow-2xl relative overflow-hidden">
-          <div className="relative z-10 max-w-3xl space-y-3">
-            <div className="inline-flex items-center space-x-2 bg-amber-400/20 text-amber-300 text-xs font-bold px-3 py-1 rounded-full">
-              <Heart className="w-3.5 h-3.5 fill-amber-300" />
-              <span>Unsere Hof-Philosophie</span>
-            </div>
-            <h2 className="text-2xl sm:text-3xl font-extrabold font-serif">
-              Glückliche Hühner, schmackhafte Eier.
-            </h2>
-            <p className="text-blue-100/90 text-xs sm:text-sm leading-relaxed">
-              Auf <strong>La Maison Bleue</strong> genießen Henriette, Blanche, Rosie, Pippa und Lotte uneingeschränkten Auslauf auf saftigen Wiesen mit bestem Bio-Futter.
-            </p>
-          </div>
-        </section>
       </main>
 
-      {/* STICKY MOBILE FLOATING CART BAR */}
-      <div className="fixed bottom-3 left-3 right-3 z-40 md:hidden">
-        <div className="bg-farm-blue-950 text-white p-3 rounded-2xl shadow-2xl border border-amber-400/50 flex items-center justify-between backdrop-blur-lg">
+      {/* STICKY MOBILE CART BAR */}
+      <div className="fixed bottom-3 left-3 right-3 z-40 sm:hidden">
+        <div className="bg-slate-900 text-white p-3 rounded-2xl shadow-2xl border border-slate-700 flex items-center justify-between">
           <div className="flex items-center space-x-2.5">
-            <div className="w-10 h-10 rounded-xl bg-amber-500 text-slate-950 flex items-center justify-center font-black text-sm shadow">
+            <div className="w-9 h-9 rounded-xl bg-amber-400 text-slate-950 flex items-center justify-center font-black text-xs">
               🥚 {selectedEggs.length}/{cartonCapacity}
             </div>
             <div>
-              <div className="text-xs text-blue-200 font-medium">Dein Eier-Mix:</div>
+              <div className="text-[11px] text-slate-300 font-medium">Gesamtsumme:</div>
               <div className="text-sm font-black text-amber-300 font-serif">
                 {totalPrice.toLocaleString('de-DE', { style: 'currency', currency: 'EUR' })}
               </div>
@@ -263,7 +201,7 @@ export const App: React.FC = () => {
             {selectedEggs.length > 0 ? (
               <button
                 onClick={() => setIsCheckoutOpen(true)}
-                className="bg-gradient-to-r from-amber-500 to-amber-600 text-slate-950 font-black text-xs px-4 py-2.5 rounded-xl shadow-lg flex items-center gap-1 active:scale-95"
+                className="bg-amber-400 text-slate-950 font-black text-xs px-4 py-2 rounded-xl shadow flex items-center gap-1 active:scale-95"
               >
                 <span>Bestellen</span>
                 <ArrowRight className="w-3.5 h-3.5" />
@@ -273,7 +211,7 @@ export const App: React.FC = () => {
                 onClick={scrollToCarton}
                 className="bg-white/20 text-white font-bold text-xs px-3 py-2 rounded-xl"
               >
-                Zum Karton
+                Karton
               </button>
             )}
           </div>
@@ -281,20 +219,9 @@ export const App: React.FC = () => {
       </div>
 
       {/* Footer */}
-      <footer className="bg-slate-900 text-slate-400 py-8 border-t border-slate-800 mt-16">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex flex-col md:flex-row items-center justify-between gap-4 text-xs">
-          <div className="flex items-center space-x-2">
-            <span className="text-base">🏠</span>
-            <span className="font-bold text-slate-200 font-serif">La Maison Bleue Eier-Hofverkauf</span>
-            <span>• © {new Date().getFullYear()}</span>
-          </div>
-
-          <div className="flex space-x-6 text-slate-400">
-            <a href="#huehner-auswahl" className="hover:text-amber-300 transition-colors">Hühner-Auswahl</a>
-            <a href="#eierkarton-section" className="hover:text-amber-300 transition-colors">Eierkarton-Mixer</a>
-            <span>Bio-Zertifiziert DE-ÖKO-006</span>
-          </div>
-        </div>
+      <footer className="bg-slate-900 text-slate-400 py-6 border-t border-slate-800 mt-12 text-center text-xs">
+        <p className="font-bold text-slate-300 font-serif">La Maison Bleue • Hof-Direktverkauf</p>
+        <p className="text-[11px] text-slate-500 mt-1">© {new Date().getFullYear()} Bio-Freilandeier frisch vom Hof</p>
       </footer>
 
       {/* Modals */}
@@ -303,20 +230,6 @@ export const App: React.FC = () => {
         onClose={() => setActiveHenModal(null)}
         onAddEgg={handleAddEgg}
         henEggCount={selectedEggs.filter((e) => activeHenModal && e.hen.id === activeHenModal.id).length}
-      />
-
-      <QuizModal
-        isOpen={isQuizOpen}
-        onClose={() => setIsQuizOpen(false)}
-        onSelectHen={(hen) => handleAddEgg(hen)}
-      />
-
-      <EggStampModal
-        egg={stampEggTarget}
-        currentStamp={stampEggTarget?.stamp}
-        onClose={() => setStampEggTarget(null)}
-        onApplyStamp={handleApplyStamp}
-        onRemoveEgg={handleRemoveEggAtSlot}
       />
 
       <CheckoutModal
