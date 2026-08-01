@@ -1,5 +1,5 @@
 import React from 'react';
-import { Egg, Sparkles, MapPin, ShieldCheck, Heart, Volume2, HelpCircle } from 'lucide-react';
+import { Egg, Sparkles, MapPin, Volume2, HelpCircle, Heart } from 'lucide-react';
 import { TITLE_IMAGE } from '../data/chickens';
 
 interface HeaderProps {
@@ -50,41 +50,38 @@ export const Header: React.FC<HeaderProps> = ({
   };
 
   return (
-    <header className="relative w-full overflow-hidden bg-farm-blue-900 text-white pb-12 pt-6 shadow-2xl">
+    <header className="relative w-full overflow-hidden bg-farm-blue-900 text-white pb-8 pt-4 shadow-xl">
       {/* Background Hero Image with Blend Overlay */}
-      <div className="absolute inset-0 z-0 opacity-40">
+      <div className="absolute inset-0 z-0 opacity-30">
         <img
           src={TITLE_IMAGE}
           alt="La Maison Bleue Titelbild"
-          className="w-full h-full object-cover object-center filter brightness-90 contrast-105 scale-105 transition-transform duration-1000"
+          className="w-full h-full object-cover object-center filter brightness-90 contrast-105 scale-105"
         />
-        <div className="absolute inset-0 bg-gradient-to-b from-farm-blue-950/80 via-farm-blue-900/60 to-amber-950/90 mix-blend-multiply" />
+        <div className="absolute inset-0 bg-gradient-to-b from-farm-blue-950/90 via-farm-blue-900/80 to-amber-950/90 mix-blend-multiply" />
       </div>
 
       {/* Top Navbar */}
       <div className="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="flex flex-col sm:flex-row items-center justify-between gap-4 py-4 border-b border-white/15">
-          <div className="flex items-center space-x-3">
-            <div className="w-12 h-12 rounded-2xl bg-gradient-to-tr from-amber-400 to-amber-200 p-0.5 shadow-lg flex items-center justify-center text-farm-blue-950 font-extrabold text-2xl animate-wobble">
+        <div className="flex flex-wrap items-center justify-between gap-3 py-2 border-b border-white/15">
+          <div className="flex items-center space-x-2.5">
+            <div className="w-10 h-10 rounded-xl bg-gradient-to-tr from-amber-400 to-amber-200 p-0.5 shadow-lg flex items-center justify-center text-farm-blue-950 font-extrabold text-xl animate-wobble">
               🏠
             </div>
             <div>
-              <span className="text-2xl font-black tracking-tight font-serif text-amber-200">
+              <span className="text-xl sm:text-2xl font-black tracking-tight font-serif text-amber-200">
                 La Maison Bleue
               </span>
-              <div className="flex items-center text-xs text-blue-100/80 font-medium">
-                <MapPin className="w-3.5 h-3.5 mr-1 text-amber-300 inline" />
-                Hof-Direktverkauf &amp; Freilandeier
+              <div className="flex items-center text-[11px] text-blue-100/80 font-medium">
+                <MapPin className="w-3 h-3 mr-1 text-amber-300 inline" />
+                Hof-Direktverkauf &amp; Bio-Eier
               </div>
             </div>
           </div>
 
-          <div className="flex items-center space-x-3">
-            {/* Playful Soundboard Buttons */}
-            <div className="hidden md:flex items-center space-x-1.5 bg-white/10 backdrop-blur-md px-3 py-1.5 rounded-full border border-white/20 text-xs font-bold">
-              <span className="text-amber-300 flex items-center gap-1">
-                <Volume2 className="w-3.5 h-3.5" /> Gack-Board:
-              </span>
+          <div className="flex items-center space-x-2">
+            {/* Gack soundboard */}
+            <div className="hidden sm:flex items-center space-x-1 bg-white/10 backdrop-blur-md px-2.5 py-1 rounded-full border border-white/20 text-xs font-bold">
               <button
                 onClick={() => playSoundEffect('cluck')}
                 className="px-2 py-0.5 rounded bg-white/15 hover:bg-amber-400 hover:text-slate-950 transition-colors"
@@ -99,61 +96,43 @@ export const Header: React.FC<HeaderProps> = ({
               >
                 🥚 Plop!
               </button>
-              <button
-                onClick={() => playSoundEffect('cheer')}
-                className="px-2 py-0.5 rounded bg-white/15 hover:bg-amber-400 hover:text-slate-950 transition-colors"
-                title="Jubel!"
-              >
-                🎉 Jubel!
-              </button>
             </div>
 
-            {/* Match Quiz Button */}
+            {/* Quiz Matcher Button */}
             <button
               onClick={onOpenQuiz}
-              className="bg-amber-400/20 hover:bg-amber-400/30 text-amber-200 border border-amber-300/40 text-xs font-bold px-3.5 py-2.5 rounded-full backdrop-blur-md transition-all flex items-center space-x-1.5"
+              className="bg-amber-400/20 hover:bg-amber-400/30 text-amber-200 border border-amber-300/40 text-xs font-bold px-3 py-1.5 rounded-full backdrop-blur-md transition-all flex items-center space-x-1"
             >
-              <HelpCircle className="w-4 h-4 text-amber-300" />
+              <HelpCircle className="w-3.5 h-3.5 text-amber-300" />
               <span>Hühner-Quiz</span>
             </button>
 
-            {/* Cart Quick Button */}
+            {/* Cart Button */}
             <button
               onClick={onOpenCart}
-              className="group relative inline-flex items-center space-x-3 bg-gradient-to-r from-amber-500 to-amber-600 hover:from-amber-400 hover:to-amber-500 text-slate-950 font-bold px-5 py-2.5 rounded-full shadow-lg shadow-amber-500/20 hover:shadow-amber-500/40 transition-all duration-300 active:scale-95"
+              className="group relative inline-flex items-center space-x-2 bg-gradient-to-r from-amber-500 to-amber-600 hover:from-amber-400 hover:to-amber-500 text-slate-950 font-bold px-4 py-2 rounded-full shadow-lg transition-all active:scale-95 text-xs sm:text-sm"
             >
-              <div className="relative">
-                <Egg className="w-5 h-5 text-slate-950 fill-amber-200 group-hover:rotate-12 transition-transform" />
-                {cartCount > 0 && (
-                  <span className="absolute -top-2 -right-2 bg-red-600 text-white text-[10px] font-extrabold w-5 h-5 rounded-full flex items-center justify-center animate-bounce border-2 border-amber-500">
-                    {cartCount}
-                  </span>
-                )}
-              </div>
-              <span className="text-sm font-semibold">
-                Karton ({cartCount}/{cartonCapacity})
-              </span>
+              <Egg className="w-4 h-4 fill-amber-200" />
+              <span>Karton ({cartCount}/{cartonCapacity})</span>
             </button>
           </div>
         </div>
 
-        {/* Hero Main Banner Content */}
-        <div className="mt-12 md:mt-16 max-w-3xl text-left">
-          <div className="inline-flex items-center space-x-2 bg-amber-400/20 border border-amber-300/30 text-amber-200 text-xs font-semibold px-3.5 py-1.5 rounded-full mb-4 backdrop-blur-md">
-            <Sparkles className="w-4 h-4 text-amber-300 animate-pulse" />
-            <span>100% Bio &amp; Artgerechte Freilandhaltung</span>
+        {/* Compact Hero Teaser */}
+        <div className="mt-4 text-center sm:text-left flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+          <div>
+            <div className="inline-flex items-center space-x-1.5 bg-amber-400/20 text-amber-300 text-xs font-bold px-3 py-0.5 rounded-full mb-1">
+              <Sparkles className="w-3.5 h-3.5 text-amber-300" />
+              <span>Wähle dein Huhn • Stelle deinen Eierkarton zusammen</span>
+            </div>
+            <h1 className="text-2xl sm:text-3xl font-extrabold font-serif text-white">
+              Welches Ei soll in deinen Karton?
+            </h1>
           </div>
 
-          <h1 className="text-4xl sm:text-5xl md:text-6xl font-extrabold font-serif tracking-tight leading-tight text-white drop-shadow-md">
-            Wähle dein Huhn. <br />
-            <span className="text-transparent bg-clip-text bg-gradient-to-r from-amber-200 via-amber-300 to-amber-100">
-              Genieße dein Ei.
-            </span>
-          </h1>
-
-          <p className="mt-4 text-base sm:text-lg text-blue-100/90 font-light leading-relaxed max-w-2xl">
-            Bei uns auf <strong className="text-amber-200 font-semibold">La Maison Bleue</strong> hat jedes Huhn einen Namen, einen eigenen Charakter und ein einzigartiges Ei. Stelle deinen Eierkarton ganz individuell Ei für Ei von deinen Lieblingshühnern zusammen!
-          </p>
+          <div className="text-xs text-blue-100/90 bg-white/10 backdrop-blur px-3 py-1.5 rounded-xl border border-white/15 self-center sm:self-auto shrink-0">
+            ✨ 100% Bio &amp; Tagesfrisch vom Hof
+          </div>
         </div>
       </div>
     </header>
